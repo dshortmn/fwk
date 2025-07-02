@@ -1,11 +1,15 @@
 from airflow import DAG
 from airflow.providers.standard.operators.bash import BashOperator
-from fwk_common.env_setup import GetCommonPath
+from fwk_common.env_setup import GetConfigPathInfo
+from fwk_common.file_io import load_yaml
 from pendulum import today
 from task_group.tg1 import create_my_task_group
 
 with DAG(
-    dag_id="example_task_group", start_date=today("UTC").add(days=-2), tags=["example"]
+    dag_id="example_task_group",
+    start_date=today("UTC").add(days=-2),
+    schedule=None,
+    tags=["example"],
 ) as dag:
     start_task = BashOperator(task_id="start_task", bash_command="echo 'Starting DAG'")
 
@@ -19,6 +23,12 @@ with DAG(
 
 
 if __name__ == "__main__":
-    current_directory = GetCommonPath()
-
-    print(f"{current_directory=}")
+    print(f"{__file__=}")
+    config_file, sql_file = GetConfigPathInfo()
+    print(f"     Config file: {config_file}")
+    print(f"     Sql file: {sql_file}")
+    config_file, sql_file = GetConfigPathInfo(__file__)
+    print(f"Pass Config file: {config_file}")
+    print(f"Pass Sql file: {sql_file}")
+    data = load_yaml(config_file)
+    print(f"Data loaded from config file: {data}")
