@@ -3,7 +3,7 @@ from airflow.providers.standard.operators.bash import BashOperator
 from fwk_common.env_setup import GetConfigPathInfo
 from fwk_common.file_io import load_yaml
 from pendulum import today
-from task_group.tg1 import create_my_task_group
+from task_group.init_tg import init_group_tg
 
 with DAG(
     dag_id="example_task_group",
@@ -14,7 +14,7 @@ with DAG(
     start_task = BashOperator(task_id="start_task", bash_command="echo 'Starting DAG'")
 
     # Instantiate the TaskGroup using the imported function
-    my_task_group_instance = create_my_task_group("my_task_group")
+    my_task_group_instance = init_group_tg("my_task_group")
 
     end_task = BashOperator(task_id="end_task", bash_command="echo 'DAG finished'")
 
