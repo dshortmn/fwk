@@ -3,7 +3,8 @@ from airflow.providers.standard.operators.bash import BashOperator
 from fwk_common.env_setup import GetConfigPathInfo
 from fwk_common.file_io import load_yaml
 from pendulum import today
-from task_group.init_tg import init_data_tg
+
+from fwk_base.task_group.init_tg import init_data_tg
 
 with DAG(
     dag_id="example_task_group",
