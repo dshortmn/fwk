@@ -1,8 +1,8 @@
 from airflow.providers.standard.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
+from fwk_common.date_fcns import date_dict
 from fwk_common.env_setup import GetConfigPathInfo
 from fwk_common.file_io import load_yaml
-from fwk.common.date_fcns import date_dict
 
 
 def init_data_tg(group_id: str) -> TaskGroup:
@@ -14,7 +14,7 @@ def init_data_tg(group_id: str) -> TaskGroup:
         def init_task(**kwargs):
             """
             initialization logic.
-            This function initialization steps for framework..
+            This function initialization steps for framework.
             """
             dag_filepath = kwargs["dag"].fileloc
             config_file, sql_file = GetConfigPathInfo(dag_filepath)
@@ -51,4 +51,6 @@ def init_data_tg(group_id: str) -> TaskGroup:
         init_process  # Define internal dependency
         # initialize jinja dictionary with data data
         jinja_dict = date_dict()
+        print(f"Jinja dictionary initialized: {jinja_dict}")
+
     return init_group
