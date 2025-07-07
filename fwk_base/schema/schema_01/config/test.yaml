@@ -1,14 +1,10 @@
 
+action_type: table_to_table # table_to_table table_to_file or file_to_table
 source_schema: test123
 source_table: table123
 dest_schema: final123
 dest_table: finaltable123
 partitioned: true
 sql_query: 
-  SELECT * 
-  FROM {{source_schema}}.{{source_table}} 
-  WHERE partition_column = {{current_date}}
-  ORDER BY id
-  LIMIT 1000;
 source_type: postgres
 dest_type: postgres
