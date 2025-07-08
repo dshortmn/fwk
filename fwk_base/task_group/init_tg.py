@@ -3,12 +3,14 @@ from airflow.utils.task_group import TaskGroup
 from fwk_common.date_fcns import date_dict
 from fwk_common.env_setup import GetConfigPathInfo
 from fwk_common.file_io import load_yaml
+from jinja2 import Template
 
 
 def init_data_tg(group_id: str) -> TaskGroup:
     """
     Defines a TaskGroup for initialization of framework.
     """
+    sql_query = ""
     with TaskGroup(group_id=group_id) as init_group:
 
         def init_task(**kwargs):
@@ -45,12 +47,17 @@ def init_data_tg(group_id: str) -> TaskGroup:
             data = load_yaml(config_file)
             print(f"Data loaded from config file: {data}")
             print("Initialization task executed.")
+            # initialize jinja dictionary with data data
+            jinja_dict = date_dict()
+            jinja_dict = jinja_dict | data
+            jinja_dict["dag_file"] = dag_filepath
+            print(f"Jinja dictionary initialized: {jinja_dict}")
+            template = Template(sql_query)
+            rendered = template.render(jinja_dict)
+            print(f"Rendered SQL Query: {rendered}")
 
         init_process = PythonOperator(task_id="init_process", python_callable=init_task)
 
         init_process  # Define internal dependency
-        # initialize jinja dictionary with data data
-        jinja_dict = date_dict()
-        print(f"Jinja dictionary initialized: {jinja_dict}")
 
     return init_group
